@@ -3,6 +3,7 @@ import { useTheme } from '../hooks/useTheme';
 import { usePWA } from '../hooks/usePWA';
 import { settingsService } from '../services/settingsService';
 import { backupService } from '../services/backupService';
+import { id as i18n } from '../i18n/id';
 import SettingsHeader from '../components/settings/SettingsHeader';
 import ProfileCard from '../components/settings/ProfileCard';
 import AppearanceCard from '../components/settings/AppearanceCard';
@@ -124,9 +125,7 @@ export default function SettingsPage() {
   };
 
   const handleResetData = async () => {
-    const userInput = window.prompt(
-      'PERINGATAN: Aksi ini akan menghapus SELURUH kebiasaan dan riwayat log di perangkat ini secara permanen.\n\nKetik kata "HAPUS" untuk mengonfirmasi:'
-    );
+    const userInput = window.prompt(i18n.settings.resetConfirmPrompt);
 
     if (userInput === 'HAPUS') {
       try {
@@ -146,12 +145,12 @@ export default function SettingsPage() {
           'replace'
         );
         await loadProfile();
-        showToast('Seluruh data lokal berhasil dibersihkan.');
+        showToast(i18n.settings.resetSuccessToast);
       } catch (err) {
         showToast('Gagal membersihkan data: ' + err.message);
       }
     } else if (userInput !== null) {
-      showToast('Reset data dibatalkan (kata konfirmasi tidak sesuai).');
+      showToast(i18n.settings.resetCancelledToast);
     }
   };
 

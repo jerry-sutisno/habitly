@@ -1,4 +1,5 @@
 import React from 'react';
+import { id as i18n } from '../../i18n/id';
 import {
   ResponsiveContainer,
   BarChart,
@@ -39,19 +40,19 @@ export default function DailyBreakdownChart({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
-            Daily Breakdown
+            {i18n.analytics.dailyBreakdownTitle}
           </h2>
           <span className="text-xs text-slate-500 dark:text-slate-400">
             {timeRange === '7d'
-              ? 'Kebiasaan selesai per hari (Minggu ini)'
-              : 'Performa konsistensi berkala'}
+              ? i18n.analytics.subtitle7d
+              : i18n.analytics.subtitleOther}
           </span>
         </div>
 
         <div className="flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-500/20 px-2.5 py-1 rounded-full">
           <span className="w-2 h-2 rounded-full bg-emerald-600 dark:bg-[#54C28E] animate-pulse" />
           <span className="text-[11px] font-semibold text-emerald-800 dark:text-[#9ce3be]">
-            Hari Ini
+            {i18n.analytics.todayIndicator}
           </span>
         </div>
       </div>

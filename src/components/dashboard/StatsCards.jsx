@@ -1,12 +1,13 @@
 import React from 'react';
 import { Flame, CheckSquare } from 'lucide-react';
+import { id as i18n } from '../../i18n/id';
 
 export default function StatsCards({ stats }) {
   const {
-    streakDays = 14,
-    personalBest = 21,
-    totalActiveHabits = 8,
-    scheduledToday = 5,
+    streakDays = 0,
+    personalBest = 0,
+    totalActiveHabits = 0,
+    scheduledToday = 0,
   } = stats || {};
 
   return (
@@ -15,7 +16,7 @@ export default function StatsCards({ stats }) {
       <div className="p-5 rounded-2xl bg-white dark:bg-[#14181D] border border-slate-200/80 dark:border-[#2A323D] shadow-sm flex flex-col justify-between gap-4 transition-all hover:border-emerald-500/30">
         <div className="flex items-center justify-between">
           <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
-            Current Streak
+            {i18n.dashboard.dailyStreak}
           </span>
           <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-[#203a2e] text-emerald-700 dark:text-[#54C28E] border border-emerald-500/20 flex items-center justify-center">
             <Flame className="h-4 w-4 fill-current" />
@@ -27,11 +28,11 @@ export default function StatsCards({ stats }) {
               {streakDays}
             </span>
             <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
-              Days
+              {i18n.common.daysSuffix}
             </span>
           </div>
           <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-1 font-medium">
-            Personal best: {personalBest} days
+            {i18n.dashboard.personalBest}: {personalBest} {i18n.common.daysSuffix}
           </p>
         </div>
       </div>
@@ -40,7 +41,7 @@ export default function StatsCards({ stats }) {
       <div className="p-5 rounded-2xl bg-white dark:bg-[#14181D] border border-slate-200/80 dark:border-[#2A323D] shadow-sm flex flex-col justify-between gap-4 transition-all hover:border-emerald-500/30">
         <div className="flex items-center justify-between">
           <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
-            Total Habits
+            Total Kebiasaan
           </span>
           <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#222933] text-slate-600 dark:text-emerald-400 border border-slate-200 dark:border-[#2A323D] flex items-center justify-center">
             <CheckSquare className="h-4 w-4" />
@@ -52,11 +53,11 @@ export default function StatsCards({ stats }) {
               {totalActiveHabits}
             </span>
             <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
-              Active
+              Aktif
             </span>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            {scheduledToday} scheduled for today
+            {scheduledToday} terjadwal hari ini
           </p>
         </div>
       </div>

@@ -1,9 +1,10 @@
 import React from 'react';
+import { id } from '../../i18n/id';
 
 export default function WeeklyRhythmChart({ rhythmData }) {
   const {
-    summary = '28 of 35 routines kept',
-    average = '80% Avg',
+    summary = '28 dari 35 rutinitas terjaga',
+    average = '80% Rata-rata',
     days = [],
   } = rhythmData || {};
 
@@ -13,7 +14,7 @@ export default function WeeklyRhythmChart({ rhythmData }) {
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <span className="text-base font-bold text-slate-900 dark:text-slate-100">
-            Weekly Rhythm
+            {id.dashboard.weeklyRhythmTitle}
           </span>
           <span className="text-xs text-slate-500 dark:text-slate-400">
             {summary}

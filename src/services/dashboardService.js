@@ -19,9 +19,9 @@ export const dashboardService = {
     return {
       name: firstName,
       fullName,
-      mindset: 'Grounded & Present',
-      greetingSubtitle: 'Breathe in, one step at a time.',
-      cadenceText: 'Mindful Cadence',
+      mindset: 'Tenang & Sadar Penuh',
+      greetingSubtitle: 'Tarik napas, satu langkah dalam satu waktu.',
+      cadenceText: 'Ritme Mindful',
     };
   },
 
@@ -51,8 +51,8 @@ export const dashboardService = {
       completedToday: progress.completedCount,
       pendingToday: Math.max(0, pendingToday),
       progressPercent: progress.progressPercent,
-      progressHeadline: 'Peaceful Momentum',
-      progressDescription: "You're making steady, mindful progress today.",
+      progressHeadline: 'Momentum Tenang',
+      progressDescription: 'Anda membuat kemajuan yang stabil dan tenang hari ini.',
       routinesLeftText: `${Math.max(0, pendingToday)} rutinitas tenang tersisa`,
     };
   },
@@ -88,7 +88,7 @@ export const dashboardService = {
     const habits = await habitService.getAllHabits({ includeArchived: false });
     const allLogs = await logService.getAllLogs();
 
-    const weekLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const weekLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
     const days = [];
 
     for (let i = 0; i < 7; i++) {

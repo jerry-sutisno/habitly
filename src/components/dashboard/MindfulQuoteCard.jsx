@@ -1,5 +1,6 @@
 import React from 'react';
 import { Quote, Anchor } from 'lucide-react';
+import { id as i18n } from '../../i18n/id';
 
 export default function MindfulQuoteCard({ quoteData, anchorData }) {
   const { quote, author } = quoteData || {};
@@ -30,7 +31,7 @@ export default function MindfulQuoteCard({ quoteData, anchorData }) {
           <div className="flex items-center gap-1.5 text-emerald-800 dark:text-[#54C28E]">
             <Anchor className="h-4 w-4" />
             <span className="text-[11px] uppercase tracking-wider font-bold">
-              Anchor of the Day
+              {i18n.dashboard.dailyAnchorTitle}
             </span>
           </div>
           <p className="text-sm font-bold text-slate-900 dark:text-slate-100">

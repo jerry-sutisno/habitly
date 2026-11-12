@@ -1,6 +1,7 @@
 import React from 'react';
-import { RefreshCw, WifiOff, CheckCircle2, X, DownloadCloud } from 'lucide-react';
+import { RefreshCw, WifiOff, CheckCircle2, X } from 'lucide-react';
 import { usePWA } from '../../hooks/usePWA';
+import { id as i18n } from '../../i18n/id';
 
 export default function PwaNotificationBanner({ pwaState }) {
   // Jika props pwaState tidak diberikan, gunakan hook secara internal
@@ -19,7 +20,7 @@ export default function PwaNotificationBanner({ pwaState }) {
       {isOffline && (
         <div className="pointer-events-auto flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-amber-900/90 dark:bg-amber-950/95 text-amber-100 border border-amber-500/30 shadow-lg backdrop-blur-md text-xs font-medium animate-slide-up">
           <WifiOff className="w-4 h-4 text-amber-300 shrink-0 animate-pulse" />
-          <span>Mode Offline Aktif — Seluruh data tetap tersimpan aman di perangkat Anda.</span>
+          <span>{i18n.pwa.offlineAlert}</span>
         </div>
       )}
 
@@ -27,7 +28,7 @@ export default function PwaNotificationBanner({ pwaState }) {
       {offlineReady && !needRefresh && (
         <div className="pointer-events-auto flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-emerald-800/90 dark:bg-emerald-950/95 text-emerald-100 border border-emerald-500/30 shadow-lg backdrop-blur-md text-xs font-medium animate-slide-up">
           <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0" />
-          <span>Habitly siap digunakan secara offline tanpa sambungan internet.</span>
+          <span>{i18n.pwa.offlineReadyAlert}</span>
         </div>
       )}
 
@@ -41,10 +42,10 @@ export default function PwaNotificationBanner({ pwaState }) {
               </div>
               <div className="min-w-0">
                 <h4 className="text-sm font-bold text-slate-100">
-                  Versi Baru Tersedia!
+                  {i18n.pwa.newVersionTitle}
                 </h4>
                 <p className="text-xs text-slate-300 mt-0.5 leading-relaxed">
-                  Pembaruan Habitly telah diunduh di latar belakang. Muat ulang untuk menerapkan pembaruan terbaru.
+                  {i18n.pwa.newVersionDesc}
                 </p>
               </div>
             </div>
@@ -64,7 +65,7 @@ export default function PwaNotificationBanner({ pwaState }) {
               onClick={dismissUpdate}
               className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-colors"
             >
-              Nanti
+              {i18n.pwa.laterButton}
             </button>
             <button
               type="button"
@@ -72,7 +73,7 @@ export default function PwaNotificationBanner({ pwaState }) {
               className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-md active:scale-95"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Muat Ulang Sekarang</span>
+              <span>{i18n.pwa.reloadButton}</span>
             </button>
           </div>
         </div>

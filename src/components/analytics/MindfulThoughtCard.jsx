@@ -1,8 +1,9 @@
 import React from 'react';
 import { Sparkles, Heart } from 'lucide-react';
+import { id as i18n } from '../../i18n/id';
 
 export default function MindfulThoughtCard({
-  thought = "Notice the small victories. Every mindful repetition shapes your future self.",
+  thought = i18n.analytics.mindfulThoughtText,
 }) {
   return (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/50 dark:from-[#15241e] dark:via-[#1B2129] dark:to-[#141d1a] border border-emerald-500/20 dark:border-emerald-500/25 p-5 sm:p-6 shadow-sm">
@@ -14,7 +15,7 @@ export default function MindfulThoughtCard({
         <div className="space-y-1.5 min-w-0">
           <div className="flex items-center gap-1.5">
             <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 dark:text-[#9ce3be]">
-              Mindful Thought
+              {i18n.analytics.mindfulThoughtTitle}
             </span>
           </div>
 

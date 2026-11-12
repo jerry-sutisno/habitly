@@ -62,7 +62,8 @@ export const calendarService = {
     const firstDate = new Date(year, monthIndex, 1);
     const lastDate = new Date(year, monthIndex + 1, 0);
     const totalDays = lastDate.getDate();
-    const firstDayOffset = firstDate.getDay(); // 0 = Minggu
+    // Kalender dimulai dari hari Senin (Senin = offset 0, ..., Minggu = offset 6)
+    const firstDayOffset = (firstDate.getDay() + 6) % 7;
 
     const startDateStr = `${year}-${String(monthIndex + 1).padStart(2, '0')}-01`;
     const endDateStr = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(totalDays).padStart(2, '0')}`;

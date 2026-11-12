@@ -1,10 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Camera, Edit2, Sparkles, Check, User } from 'lucide-react';
+import { id as i18n } from '../../i18n/id';
 
 export default function ProfileCard({
   displayName = 'Jerry Sutisno',
-  membershipStatus = 'Active Member',
-  reflectionTime = '08:00 PM',
+  membershipStatus = i18n.settings.membershipStatus,
+  reflectionTime = '20.00',
   onNameChange,
 }) {
   const [name, setName] = useState(displayName);
@@ -54,7 +55,7 @@ export default function ProfileCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-1">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              Nama Pengguna
+              {i18n.settings.displayNameLabel}
             </span>
             <span className="text-[11px] font-bold text-emerald-800 dark:text-[#9ce3be] bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-500/20 px-2 py-0.5 rounded-full">
               {membershipStatus}
@@ -69,12 +70,12 @@ export default function ProfileCard({
               onChange={(e) => setName(e.target.value)}
               onKeyDown={handleKeyDown}
               onBlur={handleSave}
-              placeholder="Masukkan nama Anda"
+              placeholder={i18n.settings.nameInputPlaceholder}
               className="w-full bg-slate-100 dark:bg-[#14181D] text-slate-900 dark:text-slate-100 font-semibold text-sm sm:text-base rounded-full py-2 pl-4 pr-10 outline-none border border-transparent focus:border-emerald-500 focus:bg-white dark:focus:bg-[#1B2129] transition-all"
             />
             <button
               type="button"
-              aria-label={isEditing ? 'Simpan nama' : 'Edit nama'}
+              aria-label={isEditing ? i18n.common.save : i18n.common.edit}
               onClick={isEditing ? handleSave : handleEditClick}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-600 dark:hover:text-[#54C28E] transition-colors"
             >
@@ -93,7 +94,7 @@ export default function ProfileCard({
         <div className="flex items-center gap-2 min-w-0">
           <Sparkles className="w-4 h-4 text-emerald-600 dark:text-[#54C28E] shrink-0" />
           <span className="text-xs text-slate-600 dark:text-slate-300 truncate">
-            Waktu refleksi kesadaran harian
+            {i18n.settings.reflectionTimeLabel}
           </span>
         </div>
         <span className="text-xs font-bold text-emerald-800 dark:text-[#9ce3be] bg-emerald-100/70 dark:bg-emerald-950/80 px-2.5 py-0.5 rounded-full shrink-0">

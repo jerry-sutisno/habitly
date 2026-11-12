@@ -1,11 +1,12 @@
 import React from 'react';
 import { ArrowUpRight, ArrowDownRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import { id as i18n } from '../../i18n/id';
 
 export default function CompletionRateCard({
   completionRate = 84,
-  trendText = '+6% vs last week',
+  trendText = '+6% vs minggu lalu',
   isTrendPositive = true,
-  momentumMessage = "You're building strong, steady momentum this week.",
+  momentumMessage = i18n.analytics.momentumMessage,
 }) {
   return (
     <div className="relative overflow-hidden bg-white dark:bg-[#1B2129] rounded-2xl border border-slate-200/80 dark:border-[#2A323D] p-5 sm:p-6 shadow-sm space-y-4">
@@ -16,7 +17,7 @@ export default function CompletionRateCard({
       <div className="relative z-10 flex items-start justify-between">
         <div>
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-            Overall Completion Rate
+            {i18n.analytics.completionRateTitle}
           </span>
           <div className="flex items-baseline gap-2.5 mt-1">
             <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-emerald-700 dark:text-[#54C28E]">

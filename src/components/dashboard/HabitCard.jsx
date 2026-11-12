@@ -1,4 +1,5 @@
 import React from 'react';
+import { id as i18n } from '../../i18n/id';
 import {
   Check,
   Circle,
@@ -62,7 +63,7 @@ export default function HabitCard({ habit, onToggle }) {
       {/* Checkbox Toggle Button */}
       <button
         type="button"
-        aria-label={`Mark ${habit.name} as ${isCompleted ? 'pending' : 'completed'}`}
+        aria-label={i18n.dashboard.markDoneLabel(habit.name)}
         onClick={(e) => {
           e.stopPropagation();
           onToggle(habit.id);

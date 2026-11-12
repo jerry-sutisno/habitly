@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Smartphone, HardDrive, DownloadCloud, ShieldCheck, ShieldAlert, Check, RefreshCw } from 'lucide-react';
 import { storageService } from '../../services/storageService';
+import { id as i18n } from '../../i18n/id';
 
 export default function AppSystemCard({
   storageUsed = '2.4 MB',
   storedHabitsCount = 8,
-  storageStatus = 'Healthy',
+  storageStatus = i18n.settings.storageHealthy,
   isInstallable = false,
   isInstalled = false,
   onInstallClick,
@@ -56,18 +57,18 @@ export default function AppSystemCard({
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate">
-                Install Habitly App
+                {i18n.settings.installAppTitle}
               </span>
               {isInstalled && (
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300">
-                  Terpasang
+                  {i18n.settings.installedBadge}
                 </span>
               )}
             </div>
             <span className="text-xs text-slate-500 dark:text-slate-400 truncate">
               {isInstalled
-                ? 'Aplikasi berjalan dalam mode PWA Standalone'
-                : 'Pasang di layar utama untuk akses cepat 100% offline'}
+                ? i18n.settings.installedDesc
+                : i18n.settings.installAppSubtitle}
             </span>
           </div>
         </div>
@@ -76,7 +77,7 @@ export default function AppSystemCard({
         {isInstalled ? (
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#14181D] text-slate-600 dark:text-slate-300 text-xs font-semibold shrink-0">
             <Check className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Aktif</span>
+            <span>{i18n.settings.installedStatus}</span>
           </div>
         ) : (
           <button
@@ -85,7 +86,7 @@ export default function AppSystemCard({
             className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm active:scale-[0.97] transition-all shrink-0 flex items-center gap-1.5"
           >
             <DownloadCloud className="w-3.5 h-3.5" />
-            <span>Install</span>
+            <span>{i18n.settings.installButton}</span>
           </button>
         )}
       </div>
@@ -105,7 +106,7 @@ export default function AppSystemCard({
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate">
-                Penyimpanan Persisten
+                {i18n.settings.persistentStorageTitle}
               </span>
               <span
                 className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
@@ -114,13 +115,13 @@ export default function AppSystemCard({
                     : 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300'
                 }`}
               >
-                {isPersisted ? 'Persisten (Aman)' : 'Standar'}
+                {isPersisted ? i18n.settings.persistentSafeBadge : i18n.settings.persistentStandardBadge}
               </span>
             </div>
             <span className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               {isPersisted
-                ? 'Data terlindung dari pembersihan memori otomatis peramban.'
-                : 'Peramban dapat menghapus data jika ruang penyimpanan perangkat penuh.'}
+                ? i18n.settings.persistentSafeDesc
+                : i18n.settings.persistentStandardDesc}
             </span>
           </div>
         </div>
@@ -140,7 +141,7 @@ export default function AppSystemCard({
             ) : (
               <>
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Lindungi Data</span>
+                <span>{i18n.settings.protectDataButton}</span>
               </>
             )}
           </button>
@@ -155,10 +156,10 @@ export default function AppSystemCard({
           </div>
           <div className="flex flex-col min-w-0">
             <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate">
-              Status Penyimpanan Lokal
+              {i18n.settings.localStorageStatusTitle}
             </span>
             <span className="text-xs text-slate-500 dark:text-slate-400 truncate">
-              {storageEstimate?.usageMb || storageUsed} terpakai · {storedHabitsCount} kebiasaan tersimpan
+              {i18n.settings.storageUsageInfo(storageEstimate?.usageMb || storageUsed, storedHabitsCount)}
             </span>
           </div>
         </div>

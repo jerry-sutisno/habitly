@@ -12,17 +12,17 @@ export default function CalendarHeader({
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       {/* Month Navigator */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start min-w-0">
         <button
           type="button"
           aria-label="Previous month"
           onClick={onPrevMonth}
-          className="w-9 h-9 rounded-full bg-white dark:bg-[#1B2129] border border-slate-200/80 dark:border-[#2A323D] text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-[#F1F5F9] hover:bg-slate-50 dark:hover:bg-[#222933] flex items-center justify-center transition-colors shadow-sm"
+          className="w-9 h-9 rounded-full bg-white dark:bg-[#1B2129] border border-slate-200/80 dark:border-[#2A323D] text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-[#F1F5F9] hover:bg-slate-50 dark:hover:bg-[#222933] flex items-center justify-center transition-colors shadow-sm shrink-0"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
 
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 px-2 min-w-[170px] text-center">
+        <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 px-2 min-w-0 flex-1 sm:flex-initial sm:min-w-[170px] text-center truncate">
           {monthName}
         </h1>
 
@@ -30,7 +30,7 @@ export default function CalendarHeader({
           type="button"
           aria-label="Next month"
           onClick={onNextMonth}
-          className="w-9 h-9 rounded-full bg-white dark:bg-[#1B2129] border border-slate-200/80 dark:border-[#2A323D] text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-[#F1F5F9] hover:bg-slate-50 dark:hover:bg-[#222933] flex items-center justify-center transition-colors shadow-sm"
+          className="w-9 h-9 rounded-full bg-white dark:bg-[#1B2129] border border-slate-200/80 dark:border-[#2A323D] text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-[#F1F5F9] hover:bg-slate-50 dark:hover:bg-[#222933] flex items-center justify-center transition-colors shadow-sm shrink-0"
         >
           <ChevronRight className="h-5 w-5" />
         </button>

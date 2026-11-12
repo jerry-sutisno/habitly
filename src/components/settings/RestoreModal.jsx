@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { X, Upload, FileText, CheckCircle2, AlertTriangle, RefreshCw, Layers } from 'lucide-react';
 import { backupService } from '../../services/backupService';
+import { id as i18n } from '../../i18n/id';
 
 export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
   const [file, setFile] = useState(null);
@@ -96,10 +97,10 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                Pulihkan Data (Restore)
+                {i18n.restoreModal.title}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Pilih file JSON cadangan Habitly Anda
+                {i18n.restoreModal.subtitle}
               </p>
             </div>
           </div>
@@ -107,6 +108,7 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
             type="button"
             onClick={onClose}
             disabled={isRestoring}
+            aria-label={i18n.common.close}
             className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#202731] transition-colors"
           >
             <X className="w-5 h-5" />
@@ -142,10 +144,10 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
                   )}
                 </div>
                 <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 text-center">
-                  {isParsing ? 'Menganalisis berkas...' : 'Klik untuk memilih berkas backup (.json)'}
+                  {isParsing ? i18n.restoreModal.parsing : i18n.restoreModal.uploadPrompt}
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 text-center">
-                  Format berkas cadangan resmi Habitly (schema v1)
+                  {i18n.restoreModal.schemaNotice}
                 </p>
               </label>
 
@@ -153,7 +155,7 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
                 <div className="mt-3 p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 text-xs flex items-start gap-2.5">
                   <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                   <div className="flex-1">
-                    <p className="font-semibold">Validasi Berkas Gagal</p>
+                    <p className="font-semibold">{i18n.restoreModal.validationFailedTitle}</p>
                     <p className="mt-0.5 leading-relaxed">{validationError}</p>
                   </div>
                 </div>
@@ -171,7 +173,7 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
                         {file?.name || 'habitly-backup.json'}
                       </p>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                        Diekspor: {formatExportedDate(parsedData.summary.exportedAt)}
+                        {i18n.restoreModal.exportedDate(formatExportedDate(parsedData.summary.exportedAt))}
                       </p>
                     </div>
                   </div>
@@ -180,7 +182,7 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
                     onClick={handleResetFile}
                     className="text-xs text-emerald-700 dark:text-[#54C28E] hover:underline shrink-0"
                   >
-                    Ganti file
+                    {i18n.restoreModal.changeFile}
                   </button>
                 </div>
 
@@ -189,19 +191,19 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
                     <div className="text-base font-extrabold text-slate-900 dark:text-slate-100">
                       {parsedData.summary.habitsCount}
                     </div>
-                    <div className="text-[10px] text-slate-500 dark:text-slate-400">Kebiasaan</div>
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400">{i18n.restoreModal.fileSummaryHabits}</div>
                   </div>
                   <div className="text-center p-2 rounded-xl bg-white dark:bg-[#1B2129] border border-slate-100 dark:border-[#2A323D]">
                     <div className="text-base font-extrabold text-slate-900 dark:text-slate-100">
                       {parsedData.summary.logsCount}
                     </div>
-                    <div className="text-[10px] text-slate-500 dark:text-slate-400">Catatan Log</div>
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400">{i18n.restoreModal.fileSummaryLogs}</div>
                   </div>
                   <div className="text-center p-2 rounded-xl bg-white dark:bg-[#1B2129] border border-slate-100 dark:border-[#2A323D]">
                     <div className="text-base font-extrabold text-slate-900 dark:text-slate-100">
                       {parsedData.summary.categoriesCount}
                     </div>
-                    <div className="text-[10px] text-slate-500 dark:text-slate-400">Kategori</div>
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400">{i18n.restoreModal.fileSummaryCategories}</div>
                   </div>
                 </div>
               </div>
@@ -209,7 +211,7 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
               {/* Mode Selection */}
               <div className="space-y-2.5">
                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
-                  Pilih Metode Pemulihan:
+                  {i18n.restoreModal.modeSelectionLabel}
                 </label>
 
                 {/* Option 1: Replace */}
@@ -232,14 +234,11 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                        Ganti Semua (Replace)
-                      </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold">
-                        SRS-FR-017
+                        {i18n.restoreModal.replaceTitle}
                       </span>
                     </div>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                      Mengosongkan semua data lama dan mengisi ulang sesuai berkas cadangan ini.
+                      {i18n.restoreModal.replaceDesc}
                     </p>
                   </div>
                 </div>
@@ -264,14 +263,11 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                        Gabung Data (Merge)
-                      </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold">
-                        SRS-FR-018
+                        {i18n.restoreModal.mergeTitle}
                       </span>
                     </div>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                      Pertahankan data yang ada. Jika ada rekaman dengan ID sama, data dengan pembaruan paling baru (Last-Write-Wins) yang dipertahankan.
+                      {i18n.restoreModal.mergeDesc}
                     </p>
                   </div>
                 </div>
@@ -287,7 +283,7 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
                     className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
                   />
                   <span className="text-[11px] text-amber-900 dark:text-amber-300 leading-relaxed">
-                    Cadangkan data saat ini secara otomatis sebelum proses penggantian dimulai (sangat direkomendasikan).
+                    {i18n.restoreModal.autoBackupNotice}
                   </span>
                 </label>
               )}
@@ -303,7 +299,7 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
             disabled={isRestoring}
             className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#2A323D] text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-[#202731] transition-colors"
           >
-            Batal
+            {i18n.common.cancel}
           </button>
           <button
             type="button"
@@ -314,12 +310,12 @@ export default function RestoreModal({ isOpen, onClose, onSuccess, onError }) {
             {isRestoring ? (
               <>
                 <RefreshCw className="w-4 h-4 animate-spin" />
-                <span>Memulihkan...</span>
+                <span>{i18n.restoreModal.submittingButton}</span>
               </>
             ) : (
               <>
                 <CheckCircle2 className="w-4 h-4" />
-                <span>Mulai Pemulihan</span>
+                <span>{i18n.restoreModal.submitButton}</span>
               </>
             )}
           </button>

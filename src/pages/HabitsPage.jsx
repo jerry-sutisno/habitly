@@ -7,6 +7,7 @@ import CategoryPills from '../components/habits/CategoryPills';
 import HabitListCard from '../components/habits/HabitListCard';
 import AddHabitModal from '../components/habits/AddHabitModal';
 import { Plus, CheckSquare, Archive, Sparkles } from 'lucide-react';
+import { id as i18n } from '../i18n/id';
 
 export default function HabitsPage() {
   const { theme, toggleTheme } = useTheme();
@@ -95,9 +96,7 @@ export default function HabitsPage() {
   };
 
   const handleDeleteHabit = async (id, name) => {
-    const confirmation = window.confirm(
-      `Hapus kebiasaan "${name || 'ini'}" secara permanen?\n\nPerhatian: Seluruh riwayat check-in kebiasaan ini akan terhapus bersih dari database.`
-    );
+    const confirmation = window.confirm(i18n.habits.confirmDelete(name));
     if (confirmation) {
       try {
         await habitService.deleteHabit(id);
@@ -140,46 +139,50 @@ export default function HabitsPage() {
       <FocusMetricBanner metrics={focusMetrics} />
 
       {/* 3. Tab Filter (Aktif vs Diarsipkan) & Category Pills */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 min-w-0 max-w-full">
         <div className="flex items-center justify-between gap-2 flex-wrap">
           {/* Active vs Archived Segmented Control */}
-          <div className="inline-flex p-1 bg-slate-100 dark:bg-[#1B2129] rounded-full border border-slate-200/80 dark:border-[#2A323D]">
+          <div className="inline-flex p-1 bg-slate-100 dark:bg-[#1B2129] rounded-full border border-slate-200/80 dark:border-[#2A323D] max-w-full">
             <button
               type="button"
               onClick={() => setActiveTab('active')}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+              className={`px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
                 activeTab === 'active'
                   ? 'bg-emerald-600 text-white shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              Aktif ({activeCount})
+              {i18n.habits.tabActive(activeCount)}
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('archived')}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+              className={`px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
                 activeTab === 'archived'
                   ? 'bg-emerald-600 text-white shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              Diarsipkan ({archivedCount})
+              {i18n.habits.tabArchived(archivedCount)}
             </button>
           </div>
 
           <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">
-            {activeTab === 'archived' ? 'Kebiasaan yang disembunyikan' : 'Kebiasaan aktif harian'}
+            {activeTab === 'archived'
+              ? i18n.habits.tabArchivedSubtitle
+              : i18n.habits.tabActiveSubtitle}
           </span>
         </div>
 
-        {/* Category Filter Pills */}
-        <CategoryPills
-          categories={categories}
-          habits={habits.filter((h) => (activeTab === 'archived' ? h.isArchived : !h.isArchived))}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-        />
+        {/* Category Filter Pills Container */}
+        <div className="min-w-0 max-w-full">
+          <CategoryPills
+            categories={categories}
+            habits={habits.filter((h) => (activeTab === 'archived' ? h.isArchived : !h.isArchived))}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+          />
+        </div>
       </div>
 
       {/* 4. Habit List Cards */}
@@ -195,13 +198,13 @@ export default function HabitsPage() {
             </div>
             <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">
               {activeTab === 'archived'
-                ? 'Tidak Ada Kebiasaan yang Diarsipkan'
-                : 'Belum Ada Kebiasaan di Kategori Ini'}
+                ? i18n.habits.emptyArchivedTitle
+                : i18n.habits.emptyActiveTitle}
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs">
               {activeTab === 'archived'
-                ? 'Kebiasaan yang Anda arsipkan akan tersimpan di sini.'
-                : 'Mulai kebiasaan baru yang bermakna dan bangun ritme hidup tenang.'}
+                ? i18n.habits.emptyArchivedSubtitle
+                : i18n.habits.emptyActiveSubtitle}
             </p>
             {activeTab === 'active' && (
               <button
@@ -210,7 +213,7 @@ export default function HabitsPage() {
                 className="mt-4 px-4 py-2 rounded-full bg-emerald-600 text-white font-semibold text-xs flex items-center gap-1.5 shadow-sm hover:bg-emerald-700 transition-all"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Tambah Kebiasaan</span>
+                <span>{i18n.habits.addHabitCta}</span>
               </button>
             )}
           </div>

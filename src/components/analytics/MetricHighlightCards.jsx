@@ -1,5 +1,6 @@
 import React from 'react';
 import { Flame, CheckCircle2, Award, CalendarCheck } from 'lucide-react';
+import { id as i18n } from '../../i18n/id';
 
 export default function MetricHighlightCards({
   bestHabit,
@@ -15,22 +16,22 @@ export default function MetricHighlightCards({
             <Flame className="w-5 h-5 fill-emerald-500/20" />
           </div>
           <span className="text-[10px] font-bold text-emerald-800 dark:text-[#9ce3be] bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-500/20 px-2 py-0.5 rounded-full uppercase">
-            Top
+            {i18n.analytics.bestHabitBadge}
           </span>
         </div>
 
         <div>
           <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-            Best Habit
+            {i18n.analytics.bestHabitTitle}
           </span>
           <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate mt-0.5">
-            {bestHabit?.name || 'Morning Meditation'}
+            {bestHabit?.name || 'Meditasi Pagi'}
           </h3>
         </div>
 
         <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-[#54C28E]">
           <Flame className="w-4 h-4" />
-          <span>{bestHabit?.streak || 18} day streak</span>
+          <span>{i18n.analytics.streakCount(bestHabit?.streak || 18)}</span>
         </div>
       </div>
 
@@ -41,22 +42,22 @@ export default function MetricHighlightCards({
             <CheckCircle2 className="w-5 h-5" />
           </div>
           <span className="text-[10px] font-bold text-teal-800 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 border border-teal-500/20 px-2 py-0.5 rounded-full uppercase">
-            Peak
+            {i18n.analytics.mostConsistentDayBadge}
           </span>
         </div>
 
         <div>
           <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-            Most Consistent
+            {i18n.analytics.mostConsistentDayTitle}
           </span>
           <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate mt-0.5">
-            {mostConsistentDay?.day || 'Tuesdays'}
+            {mostConsistentDay?.day || 'Selasa'}
           </h3>
         </div>
 
         <div className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-700 dark:text-teal-300">
           <CheckCircle2 className="w-4 h-4" />
-          <span>{mostConsistentDay?.description || '94% avg rate'}</span>
+          <span>{mostConsistentDay?.description || 'Rata-rata 94%'}</span>
         </div>
       </div>
 
@@ -67,21 +68,21 @@ export default function MetricHighlightCards({
             <Award className="w-5 h-5" />
           </div>
           <span className="text-[10px] font-bold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-500/20 px-2 py-0.5 rounded-full uppercase">
-            100%
+            {i18n.analytics.perfectDaysBadge}
           </span>
         </div>
 
         <div>
           <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-            Perfect Days
+            {i18n.analytics.perfectDaysTitle}
           </span>
           <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate mt-0.5">
-            {stats?.perfectDays || 3} Hari Sempurna
+            {i18n.analytics.perfectDaysCount(stats?.perfectDays || 3)}
           </h3>
         </div>
 
         <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-400">
-          <span>Semua habit tercapai</span>
+          <span>{i18n.analytics.perfectDaysDesc}</span>
         </div>
       </div>
 
@@ -92,21 +93,21 @@ export default function MetricHighlightCards({
             <CalendarCheck className="w-5 h-5" />
           </div>
           <span className="text-[10px] font-bold text-indigo-800 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-500/20 px-2 py-0.5 rounded-full uppercase">
-            Aktivitas
+            {i18n.analytics.totalCheckinsBadge}
           </span>
         </div>
 
         <div>
           <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-            Total Check-ins
+            {i18n.analytics.totalCheckinsTitle}
           </span>
           <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate mt-0.5">
-            {stats?.totalCheckins || 28} Kali Selesai
+            {i18n.analytics.totalCheckinsCount(stats?.totalCheckins || 28)}
           </h3>
         </div>
 
         <div className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-700 dark:text-indigo-400">
-          <span>Aktif tercatat</span>
+          <span>{i18n.analytics.totalCheckinsDesc}</span>
         </div>
       </div>
     </div>

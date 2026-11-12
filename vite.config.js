@@ -14,6 +14,7 @@ export default defineConfig({
         name: 'HABITLY - Habit Tracker',
         short_name: 'HABITLY',
         description: 'Build Better Habits, Build a Better You. Local-First Habit Tracker PWA.',
+        lang: 'id',
         theme_color: '#10B981',
         background_color: '#0F172A',
         display: 'standalone',

@@ -8,23 +8,16 @@ import {
   STATUS_FUTURE,
   STATUS_META,
 } from '../../services/calendarService';
+import { id as i18n } from '../../i18n/id';
 
-const WEEKDAYS = [
-  { short: 'Min', long: 'Minggu' },
-  { short: 'Sen', long: 'Senin' },
-  { short: 'Sel', long: 'Selasa' },
-  { short: 'Rab', long: 'Rabu' },
-  { short: 'Kam', long: 'Kamis' },
-  { short: 'Jum', long: 'Jumat' },
-  { short: 'Sab', long: 'Sabtu' },
-];
+const WEEKDAYS = i18n.calendar.weekdays;
 
 function StatusIndicator({ status, completed, total }) {
   if (status === STATUS_ALL_COMPLETED) {
     return (
       <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-[#54C28E] border border-emerald-500/30 text-[10px] font-bold">
         <Check className="w-3 h-3 stroke-[2.5]" />
-        <span className="hidden sm:inline">Selesai</span>
+        <span className="hidden sm:inline">{i18n.calendar.statusAllCompleted}</span>
       </div>
     );
   }
@@ -42,7 +35,7 @@ function StatusIndicator({ status, completed, total }) {
     return (
       <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-400 border border-rose-500/30 text-[10px] font-bold">
         <X className="w-3 h-3 stroke-[2.5]" />
-        <span className="hidden sm:inline">Terlewat</span>
+        <span className="hidden sm:inline">{i18n.calendar.statusNoneCompleted}</span>
       </div>
     );
   }
@@ -51,7 +44,7 @@ function StatusIndicator({ status, completed, total }) {
     return (
       <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-300/40 dark:border-slate-700 text-[10px] font-medium">
         <Minus className="w-3 h-3" />
-        <span className="hidden sm:inline">Libur</span>
+        <span className="hidden sm:inline">{i18n.calendar.statusNoSchedule}</span>
       </div>
     );
   }
@@ -60,7 +53,7 @@ function StatusIndicator({ status, completed, total }) {
   return (
     <div className="flex items-center gap-1 px-1 py-0.5 text-slate-500 dark:text-slate-400 text-[10px]">
       <Clock className="w-2.5 h-2.5" />
-      <span className="text-[9px] hidden sm:inline">Nanti</span>
+      <span className="text-[9px] hidden sm:inline">{i18n.calendar.statusFuture}</span>
     </div>
   );
 }

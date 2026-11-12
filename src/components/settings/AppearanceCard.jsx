@@ -1,14 +1,15 @@
 import React from 'react';
 import { Sun, Moon, Laptop } from 'lucide-react';
+import { id as i18n } from '../../i18n/id';
 
 export default function AppearanceCard({
   currentTheme = 'system',
   onSelectTheme,
 }) {
   const themes = [
-    { id: 'light', label: 'Light', icon: Sun, desc: 'Calm Light' },
-    { id: 'dark', label: 'Dark', icon: Moon, desc: 'Dark Sanctuary' },
-    { id: 'system', label: 'System', icon: Laptop, desc: 'Otomatis' },
+    { id: 'light', label: i18n.settings.themeLight, icon: Sun, desc: i18n.common.lightMode },
+    { id: 'dark', label: i18n.settings.themeDark, icon: Moon, desc: i18n.common.darkMode },
+    { id: 'system', label: i18n.settings.themeSystem, icon: Laptop, desc: i18n.common.systemMode },
   ];
 
   const activeThemeMeta = themes.find((t) => t.id === currentTheme) || themes[2];
@@ -18,10 +19,10 @@ export default function AppearanceCard({
       <div className="flex items-center justify-between px-1">
         <div>
           <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
-            Tampilan (Appearance)
+            {i18n.settings.appearanceTitle}
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Pilih suasana tema yang menenangkan mata Anda
+            {i18n.settings.appearanceSubtitle}
           </p>
         </div>
         <span className="text-xs font-semibold text-emerald-800 dark:text-[#9ce3be] bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">

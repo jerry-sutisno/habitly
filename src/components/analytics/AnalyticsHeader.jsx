@@ -1,5 +1,6 @@
 import React from 'react';
 import { Share2, Sun, Moon } from 'lucide-react';
+import { id as i18n } from '../../i18n/id';
 
 export default function AnalyticsHeader({
   timeRange = '7d',
@@ -8,9 +9,9 @@ export default function AnalyticsHeader({
   onToggleTheme,
 }) {
   const timeOptions = [
-    { id: '7d', label: '7 Days' },
-    { id: '30d', label: '30 Days' },
-    { id: '90d', label: '90 Days' },
+    { id: '7d', label: i18n.analytics.timeOptions['7d'] },
+    { id: '30d', label: i18n.analytics.timeOptions['30d'] },
+    { id: '90d', label: i18n.analytics.timeOptions['90d'] },
   ];
 
   return (
@@ -18,10 +19,10 @@ export default function AnalyticsHeader({
       {/* Title & Subtitle */}
       <div>
         <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 dark:text-[#9ce3be]">
-          Your Progress
+          {i18n.analytics.progressBadge}
         </span>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-          Analytics
+          {i18n.analytics.title}
         </h1>
       </div>
 
@@ -53,7 +54,7 @@ export default function AnalyticsHeader({
           <button
             type="button"
             onClick={onToggleTheme}
-            aria-label="Toggle theme"
+            aria-label={theme === 'dark' ? i18n.common.lightMode : i18n.common.darkMode}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-xs font-medium shadow-sm min-h-[36px]"
           >
             {theme === 'dark' ? (
@@ -62,23 +63,23 @@ export default function AnalyticsHeader({
               <Moon className="h-4 w-4 text-slate-600" />
             )}
             <span className="hidden sm:inline">
-              {theme === 'dark' ? 'Light' : 'Dark'}
+              {theme === 'dark' ? i18n.common.lightMode : i18n.common.darkMode}
             </span>
           </button>
 
           {/* Share Button (Stitch action) */}
           <button
             type="button"
-            aria-label="Share Analytics"
+            aria-label={i18n.common.share}
             onClick={() => {
               if (navigator.share) {
                 navigator.share({
-                  title: 'Habitly Analytics',
+                  title: `${i18n.common.appName} ${i18n.analytics.title}`,
                   text: 'Lihat progres konsistensi kebiasaan saya di Habitly!',
                   url: window.location.href,
                 }).catch(() => {});
               } else {
-                alert('Tautan ringkasan analitik disalin ke clipboard!');
+                alert(i18n.analytics.shareSuccessAlert);
               }
             }}
             className="w-9 h-9 rounded-full bg-white dark:bg-[#1B2129] border border-slate-200/80 dark:border-[#2A323D] text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 flex items-center justify-center transition-all shadow-sm active:scale-95"

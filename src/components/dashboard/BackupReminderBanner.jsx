@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Cloud, Download, X, ShieldAlert } from 'lucide-react';
 import { backupService } from '../../services/backupService';
+import { id as i18n } from '../../i18n/id';
 
 export default function BackupReminderBanner({ onBackupComplete }) {
   const [isDismissed, setIsDismissed] = useState(false);
@@ -34,14 +35,14 @@ export default function BackupReminderBanner({ onBackupComplete }) {
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100">
-                Amankan Kemajuan Kebiasaan Anda
+                {i18n.dashboard.backupReminder.title}
               </h4>
               <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300">
-                Pengingat Cadangan
+                {i18n.dashboard.backupReminder.badge}
               </span>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
-              Data Anda tersimpan di penyimpanan offline peramban ini. Ekspor cadangan JSON secara berkala agar streaks Anda tetap aman.
+              {i18n.dashboard.backupReminder.description}
             </p>
           </div>
         </div>
@@ -55,13 +56,13 @@ export default function BackupReminderBanner({ onBackupComplete }) {
             className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-bold transition-all shadow-sm active:scale-[0.98]"
           >
             <Download className="w-4 h-4" />
-            <span>{isExporting ? 'Mengekspor...' : 'Cadangkan Sekarang'}</span>
+            <span>{isExporting ? i18n.dashboard.backupReminder.exportingButton : i18n.dashboard.backupReminder.actionButton}</span>
           </button>
 
           <button
             type="button"
             onClick={() => setIsDismissed(true)}
-            aria-label="Tutup pengingat"
+            aria-label={i18n.common.close}
             className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-[#202731] transition-colors"
           >
             <X className="w-4 h-4" />

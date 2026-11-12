@@ -1,9 +1,10 @@
 import React from 'react';
 import { Download, Upload, Cloud, ShieldCheck } from 'lucide-react';
+import { id as i18n } from '../../i18n/id';
 
 export default function BackupRestoreCard({
   lastSynced = 'Hari ini, 08:45 WIB',
-  syncMode = 'Auto',
+  syncMode = i18n.settings.syncModeLabel,
   onExportClick,
   onRestoreClick,
 }) {
@@ -17,10 +18,10 @@ export default function BackupRestoreCard({
           </div>
           <div className="flex flex-col min-w-0">
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 leading-tight">
-              Backup & Restore
+              {i18n.settings.backupRestoreTitle}
             </h2>
             <span className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Sinkronisasi terakhir: {lastSynced}
+              {i18n.settings.lastSyncedLabel(lastSynced)}
             </span>
           </div>
         </div>
@@ -32,7 +33,7 @@ export default function BackupRestoreCard({
 
       {/* Security notice */}
       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-        Cadangkan rekaman kebiasaan, riwayat streaks, dan jurnal harian Anda ke dalam file JSON lokal yang aman.
+        {i18n.settings.backupDescription}
       </p>
 
       {/* Action Buttons: Export & Restore (UI Ready for Phase 3) */}
@@ -43,7 +44,7 @@ export default function BackupRestoreCard({
           className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#14181D] dark:hover:bg-[#202731] text-emerald-700 dark:text-[#54C28E] text-xs sm:text-sm font-semibold transition-all border border-slate-200/60 dark:border-[#2A323D] active:scale-[0.98]"
         >
           <Download className="w-4 h-4" />
-          <span>Export Backup</span>
+          <span>{i18n.settings.exportBackupButton}</span>
         </button>
 
         <button
@@ -52,7 +53,7 @@ export default function BackupRestoreCard({
           className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#14181D] dark:hover:bg-[#202731] text-emerald-700 dark:text-[#54C28E] text-xs sm:text-sm font-semibold transition-all border border-slate-200/60 dark:border-[#2A323D] active:scale-[0.98]"
         >
           <Upload className="w-4 h-4" />
-          <span>Restore File</span>
+          <span>{i18n.settings.restoreFileButton}</span>
         </button>
       </div>
     </div>

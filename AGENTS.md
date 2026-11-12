@@ -53,6 +53,15 @@ Sebelum menulis kode atau melakukan modifikasi apa pun, **baca dan patuhi seluru
 - Pengguna hanya boleh mencatat atau mengedit kebiasaan untuk **hari ini** dan maksimal **7 hari ke belakang** ($T_{\text{today}} - 7 \text{ hari}$).
 - Tanggal masa depan ($T > T_{\text{today}}$) dilarang dicatat dan harus dinonaktifkan di UI serta divalidasi di service layer.
 
+### 2.6 Internasionalisasi & Bahasa UI
+- **Wajib:** Semua teks UI wajib lewat `src/i18n/id.js` dan berbahasa Indonesia.
+- Jangan terjemahkan hal teknis: nama field/kolom, nilai status di database (`completed`, `skipped`, `checkbox`, `measurable`, `daily`, `selected_days`), key di file backup JSON, dan nama identifier kode lainnya.
+- Nama produk "HABITLY" dan tagline tetap dipertahankan.
+
+### 2.7 Desain Responsif Mobile 360px
+- **Wajib:** Layout harus pas di lebar 360 px tanpa scroll horizontal.
+- Semua kontainer flex yang memuat teks dinamis atau judul wajib menerapkan `min-w-0` pada kontainer flex dan `truncate` pada teks panjang, serta `flex-wrap` pada baris tombol/chip agar tidak melebar keluar layar (360px - 430px).
+
 ---
 
 ## 3. Arsitektur Folder & File
