@@ -22,26 +22,26 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState({
     name: 'Jerry',
     fullName: 'Jerry Sutisno',
-    greetingSubtitle: 'Breathe in, one step at a time.',
-    cadenceText: 'Mindful Cadence',
+    greetingSubtitle: 'Tarik napas, satu langkah dalam satu waktu.',
+    cadenceText: 'Ritme Mindful',
   });
   const [habits, setHabits] = useState([]);
   const [stats, setStats] = useState({
-    streakDays: 1,
-    personalBest: 21,
+    streakDays: 0,
+    personalBest: 0,
     totalActiveHabits: 0,
     scheduledToday: 0,
     completedToday: 0,
     pendingToday: 0,
     progressPercent: 0,
-    progressHeadline: 'Peaceful Momentum',
-    progressDescription: "You're making steady, mindful progress today.",
-    routinesLeftText: '0 rutinitas tersisa',
+    progressHeadline: 'Mulai Langkah Pertama',
+    progressDescription: 'Tanam kebiasaan baru untuk memulai perjalanan mindful Anda hari ini.',
+    routinesLeftText: '',
   });
   const [weekDays, setWeekDays] = useState([]);
   const [rhythmData, setRhythmData] = useState({
     summary: 'Memuat ritme...',
-    average: '80% Avg',
+    average: '0% Rata-rata',
     days: [],
   });
 

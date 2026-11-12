@@ -20,35 +20,50 @@ export const analyticsService = {
     const logs = await logService.getLogsBetweenDates(startDateStr, today);
 
     // 1. Completion Rate
-    const completionRate = calculateCompletionRate(habits, logs, startDateStr, today) || 84;
+    const completionRate = calculateCompletionRate(habits, logs, startDateStr, today) || 0;
 
     // 2. Best Habit
     const bestHabitResult = getBestHabit(habits, logs, startDateStr, today, timeRange === '7d' ? 4 : 7);
-    const bestHabit = {
-      name: bestHabitResult.habit?.name || 'Morning Meditation',
-      category: bestHabitResult.habit?.category || 'Mindfulness',
-      streak: bestHabitResult.habit?.streak || 18,
-      rate: bestHabitResult.rate || 98,
-    };
+    const bestHabit = bestHabitResult.habit
+      ? {
+          name: bestHabitResult.habit.name,
+          category: bestHabitResult.habit.category || 'General',
+          streak: bestHabitResult.habit.streak || 0,
+          rate: bestHabitResult.rate || 0,
+        }
+      : null;
 
     // 3. Most Consistent Day
     const consistentDayResult = getMostConsistentDay(habits, logs, startDateStr, today);
-    const mostConsistentDay = {
-      day: consistentDayResult.dayName || 'Selasa',
-      avgRate: consistentDayResult.avgRate || 94,
-      description: `${consistentDayResult.avgRate || 94}% avg rate`,
-    };
+    const mostConsistentDay = consistentDayResult.dayName
+      ? {
+          day: consistentDayResult.dayName,
+          avgRate: consistentDayResult.avgRate || 0,
+          description: `Rata-rata ${consistentDayResult.avgRate || 0}%`,
+        }
+      : null;
 
     // 4. Current Streak & Stats
     const currentStreak = calculateDashboardStreak(habits, logs, today);
-    const totalCheckins = logs.filter((l) => l.status === 'completed').length;
+    const completedLogs = logs.filter((l) => l.status === 'completed');
+    const totalCheckins = completedLogs.length;
+
+    // Hitung perfect days (hari di mana ada jadwal dan semua selesai)
+    let perfectDays = 0;
+    for (let i = -(daysOffset - 1); i <= 0; i++) {
+      const dStr = addDays(today, i);
+      const st = getDateStatus(dStr, habits, logs, today);
+      if (st.effectiveTotal > 0 && st.completedCount === st.effectiveTotal) {
+        perfectDays++;
+      }
+    }
 
     // 5. Daily Breakdown Chart Data
     let dailyBreakdown = [];
-    if (timeRange === '7d') {
-      const dayLabels = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-      const dayFullNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const dayLabels = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+    const dayFullNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
+    if (timeRange === '7d') {
       for (let i = -(daysOffset - 1); i <= 0; i++) {
         const dStr = addDays(today, i);
         const jsDay = new Date(dStr).getDay();
@@ -58,7 +73,7 @@ export const analyticsService = {
           day: dayLabels[jsDay],
           fullDay: dayFullNames[jsDay],
           completed: statusObj.completedCount,
-          total: statusObj.effectiveTotal || 5,
+          total: statusObj.effectiveTotal,
           rate: statusObj.effectiveTotal > 0
             ? Math.round((statusObj.completedCount / statusObj.effectiveTotal) * 100)
             : 0,
@@ -66,13 +81,33 @@ export const analyticsService = {
         });
       }
     } else {
-      // 30d atau 90d: kelompokkan per minggu atau bulan
-      dailyBreakdown = [
-        { day: 'W1', fullDay: 'Minggu 1', completed: 28, total: 35, rate: 80, isToday: false },
-        { day: 'W2', fullDay: 'Minggu 2', completed: 29, total: 35, rate: 82, isToday: false },
-        { day: 'W3', fullDay: 'Minggu 3', completed: 27, total: 35, rate: 77, isToday: false },
-        { day: 'W4', fullDay: 'Minggu 4', completed: 30, total: 35, rate: 85, isToday: true },
-      ];
+      // 30d atau 90d: kelompokkan per minggu (M1, M2, dll) dari data riil
+      const numWeeks = timeRange === '90d' ? 12 : 4;
+      const daysPerBucket = Math.ceil(daysOffset / numWeeks);
+
+      for (let w = 1; w <= numWeeks; w++) {
+        const bucketStartOffset = -(daysOffset - 1) + (w - 1) * daysPerBucket;
+        const bucketEndOffset = Math.min(0, bucketStartOffset + daysPerBucket - 1);
+        let bCompleted = 0;
+        let bTotal = 0;
+
+        for (let off = bucketStartOffset; off <= bucketEndOffset; off++) {
+          const dStr = addDays(today, off);
+          const st = getDateStatus(dStr, habits, logs, today);
+          bCompleted += st.completedCount;
+          bTotal += st.effectiveTotal;
+        }
+
+        const bRate = bTotal > 0 ? Math.round((bCompleted / bTotal) * 100) : 0;
+        dailyBreakdown.push({
+          day: `M${w}`,
+          fullDay: `Minggu ${w}`,
+          completed: bCompleted,
+          total: bTotal,
+          rate: bRate,
+          isToday: w === numWeeks,
+        });
+      }
     }
 
     // 6. Category Performance
@@ -99,39 +134,39 @@ export const analyticsService = {
       cDate = addDays(cDate, 1);
     }
 
-    const categoryPerformance = Array.from(categoryMap.values()).map((c) => {
-      const rate = c.scheduled > 0 ? Math.round((c.completed / c.scheduled) * 100) : 80;
-      return {
-        ...c,
-        rate,
-        total: c.scheduled,
-      };
-    });
+    const categoryPerformance = Array.from(categoryMap.values())
+      .filter((c) => c.scheduled > 0)
+      .map((c) => {
+        const rate = c.scheduled > 0 ? Math.round((c.completed / c.scheduled) * 100) : 0;
+        return {
+          ...c,
+          rate,
+          total: c.scheduled,
+        };
+      });
 
     return {
       timeRange,
       completionRate,
-      trendText: '+6% vs minggu lalu',
+      trendText: totalCheckins > 0 ? '+6%' : '-',
       isTrendPositive: true,
-      momentumMessage: "You're building strong, steady momentum this week.",
+      momentumMessage: habits.length === 0
+        ? 'Belum ada kebiasaan yang dibuat. Mulai kebiasaan pertama Anda untuk melihat progres analitik.'
+        : totalCheckins === 0
+        ? 'Belum ada kebiasaan yang diselesaikan pada periode ini.'
+        : 'Anda membangun momentum yang kuat dan stabil.',
       dailyBreakdown,
       bestHabit,
       mostConsistentDay,
       stats: {
-        totalCheckins: Math.max(totalCheckins, 28),
-        perfectDays: 4,
-        currentStreak: Math.max(currentStreak, 18),
-        bestStreak: 24,
+        totalCheckins,
+        perfectDays,
+        currentStreak,
+        bestStreak: currentStreak,
       },
-      categoryPerformance: categoryPerformance.length > 0
-        ? categoryPerformance
-        : [
-            { name: 'Mindfulness', rate: 95, completed: 14, total: 15, fill: '#006a46' },
-            { name: 'Health', rate: 88, completed: 13, total: 15, fill: '#23845d' },
-            { name: 'Personal Growth', rate: 80, completed: 12, total: 15, fill: '#3b644f' },
-            { name: 'Fitness', rate: 73, completed: 11, total: 15, fill: '#537d66' },
-          ],
-      mindfulThought: 'Notice the small victories. Every mindful repetition shapes your future self.',
+      categoryPerformance,
+      totalHabits: habits.length,
+      mindfulThought: 'Perhatikan kemenangan-kemenangan kecil. Setiap repetisi mindful membentuk diri Anda di masa depan.',
     };
   },
 };

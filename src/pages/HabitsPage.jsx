@@ -16,10 +16,14 @@ export default function HabitsPage() {
   const [habits, setHabits] = useState([]);
   const [categories, setCategories] = useState(['All']);
   const [focusMetrics, setFocusMetrics] = useState({
-    activeDays: 22,
-    cadenceRate: '88% Rhythm',
-    longestStreak: 18,
-    focusSummary: 'Kebiasaan mindful aktif dipertahankan dengan konsisten',
+    percentage: 0,
+    completed: 0,
+    total: 0,
+    activeDays: 0,
+    cadenceRate: '0% Ritme',
+    longestStreak: 0,
+    headline: 'Mulai Kebiasaan Pertama Anda',
+    summary: 'Tanam kebiasaan baru untuk membangun ritme harian Anda.',
   });
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activeTab, setActiveTab] = useState('active'); // 'active' | 'archived'

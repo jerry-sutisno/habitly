@@ -12,16 +12,17 @@ export default function AnalyticsPage() {
   const { theme, toggleTheme } = useTheme();
   const [timeRange, setTimeRange] = useState('7d');
   const [data, setData] = useState({
-    completionRate: 84,
-    trendText: '+6% vs minggu lalu',
+    completionRate: 0,
+    trendText: '-',
     isTrendPositive: true,
-    momentumMessage: "You're building strong, steady momentum this week.",
+    momentumMessage: 'Memuat data analitik...',
     dailyBreakdown: [],
-    bestHabit: { name: 'Morning Meditation', category: 'Mindfulness', streak: 18, rate: 98 },
-    mostConsistentDay: { day: 'Selasa', avgRate: 94, description: '94% avg rate' },
-    stats: { totalCheckins: 28, perfectDays: 4, currentStreak: 18, bestStreak: 24 },
+    bestHabit: null,
+    mostConsistentDay: null,
+    stats: { totalCheckins: 0, perfectDays: 0, currentStreak: 0, bestStreak: 0 },
     categoryPerformance: [],
-    mindfulThought: 'Notice the small victories. Every mindful repetition shapes your future self.',
+    totalHabits: 0,
+    mindfulThought: 'Perhatikan kemenangan-kemenangan kecil. Setiap repetisi mindful membentuk diri Anda di masa depan.',
   });
 
   const loadAnalytics = async () => {

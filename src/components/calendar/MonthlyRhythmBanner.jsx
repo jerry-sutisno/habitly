@@ -2,9 +2,10 @@ import React from 'react';
 import { TrendingUp, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function MonthlyRhythmBanner({
-  consistencyRate = 82,
-  activeDaysLogged = 22,
-  trendText = '+4%',
+  consistencyRate = 0,
+  activeDaysLogged = 0,
+  trendText = '-',
+  totalHabits = 0,
 }) {
   return (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 p-5 sm:p-6 text-white shadow-md shadow-emerald-900/10">
@@ -20,10 +21,12 @@ export default function MonthlyRhythmBanner({
               <Sparkles className="h-3 w-3 text-emerald-200" />
               Ritme Konsistensi Bulanan
             </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400/30 text-xs font-medium text-emerald-100">
-              <TrendingUp className="h-3 w-3" />
-              {trendText} vs bln lalu
-            </span>
+            {trendText && trendText !== '-' && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400/30 text-xs font-medium text-emerald-100">
+                <TrendingUp className="h-3 w-3" />
+                {trendText} vs bln lalu
+              </span>
+            )}
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
@@ -32,7 +35,15 @@ export default function MonthlyRhythmBanner({
           <p className="text-xs sm:text-sm text-emerald-100/90 flex items-center gap-1.5">
             <CheckCircle2 className="h-4 w-4 text-emerald-300 shrink-0" />
             <span>
-              <strong>{activeDaysLogged} hari aktif</strong> berhasil tercatat dengan baik sepanjang bulan ini.
+              {activeDaysLogged > 0 ? (
+                <>
+                  <strong>{activeDaysLogged} hari aktif</strong> berhasil tercatat dengan baik sepanjang bulan ini.
+                </>
+              ) : totalHabits > 0 ? (
+                'Belum ada hari aktif yang tercatat di bulan ini. Mulai tandai kebiasaan Anda setiap hari.'
+              ) : (
+                'Belum ada kebiasaan yang dibuat. Tanam kebiasaan pertama Anda untuk melihat ritme bulanan.'
+              )}
             </span>
           </p>
         </div>

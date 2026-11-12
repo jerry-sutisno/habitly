@@ -4,11 +4,11 @@ import { id as i18n } from '../../i18n/id';
 
 export default function FocusMetricBanner({ metrics }) {
   const {
-    percentage = 86,
-    completed = 6,
-    total = 8,
-    summary = i18n.habits.focusSummary(6, 8),
-    headline = i18n.habits.focusHeadline(86),
+    percentage = 0,
+    completed = 0,
+    total = 0,
+    summary = 'Tanam kebiasaan baru untuk membangun ritme harian Anda.',
+    headline = 'Mulai Kebiasaan Pertama Anda',
   } = metrics || {};
 
   return (

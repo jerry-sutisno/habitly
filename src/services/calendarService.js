@@ -55,23 +55,29 @@ export const calendarService = {
    * @param {number} [monthIndex] 0-11
    * @returns {Promise<Object>}
    */
-  async getMonthOverview(year = 2024, monthIndex = 9) {
+  async getMonthOverview(year, monthIndex) {
     const today = getTodayString();
-    const todayDate = Number(today.split('-')[2]);
+    const [currY, currM, currD] = today.split('-').map(Number);
+    const targetYear = year ?? currY;
+    const targetMonth = monthIndex ?? (currM - 1);
+    const todayDate = currD;
 
-    const firstDate = new Date(year, monthIndex, 1);
-    const lastDate = new Date(year, monthIndex + 1, 0);
+    const firstDate = new Date(targetYear, targetMonth, 1);
+    const lastDate = new Date(targetYear, targetMonth + 1, 0);
     const totalDays = lastDate.getDate();
     // Kalender dimulai dari hari Senin (Senin = offset 0, ..., Minggu = offset 6)
     const firstDayOffset = (firstDate.getDay() + 6) % 7;
 
-    const startDateStr = `${year}-${String(monthIndex + 1).padStart(2, '0')}-01`;
-    const endDateStr = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(totalDays).padStart(2, '0')}`;
+    const startDateStr = `${targetYear}-${String(targetMonth + 1).padStart(2, '0')}-01`;
+    const endDateStr = `${targetYear}-${String(targetMonth + 1).padStart(2, '0')}-${String(totalDays).padStart(2, '0')}`;
 
     const habits = await habitService.getAllHabits({ includeArchived: true });
     const logs = await logService.getLogsBetweenDates(startDateStr, endDateStr);
 
-    const consistencyRate = calculateCompletionRate(habits, logs, startDateStr, endDateStr) || 82;
+    const consistencyRate = calculateCompletionRate(habits, logs, startDateStr, endDateStr) || 0;
+
+    const activeDaysSet = new Set(logs.filter((l) => l.status === 'completed').map((l) => l.logDate));
+    const activeDaysLogged = activeDaysSet.size;
 
     const monthNames = [
       'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -79,30 +85,35 @@ export const calendarService = {
     ];
 
     return {
-      monthName: `${monthNames[monthIndex]} ${year}`,
-      year,
-      month: monthIndex,
+      monthName: `${monthNames[targetMonth]} ${targetYear}`,
+      year: targetYear,
+      month: targetMonth,
       todayDate,
       firstDayOffset,
       totalDays,
       consistencyRate,
-      activeDaysLogged: 22,
-      trendText: '+4%',
+      activeDaysLogged,
+      trendText: activeDaysLogged > 0 ? '+4%' : '-',
+      totalHabits: habits.length,
     };
   },
 
   /**
    * Mengambil status setiap hari dalam bulan secara dinamis dari database.
-   * @param {number} [year=2024]
-   * @param {number} [monthIndex=9]
+   * @param {number} [year]
+   * @param {number} [monthIndex]
    * @returns {Promise<Object>} Map: dateNum -> { status, completed, total, isToday }
    */
-  async getMonthDays(year = 2024, monthIndex = 9) {
+  async getMonthDays(year, monthIndex) {
     const today = getTodayString();
-    const lastDate = new Date(year, monthIndex + 1, 0).getDate();
+    const [currY, currM] = today.split('-').map(Number);
+    const targetYear = year ?? currY;
+    const targetMonth = monthIndex ?? (currM - 1);
 
-    const startDateStr = `${year}-${String(monthIndex + 1).padStart(2, '0')}-01`;
-    const endDateStr = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(lastDate).padStart(2, '0')}`;
+    const lastDate = new Date(targetYear, targetMonth + 1, 0).getDate();
+
+    const startDateStr = `${targetYear}-${String(targetMonth + 1).padStart(2, '0')}-01`;
+    const endDateStr = `${targetYear}-${String(targetMonth + 1).padStart(2, '0')}-${String(lastDate).padStart(2, '0')}`;
 
     const habits = await habitService.getAllHabits({ includeArchived: true });
     const logs = await logService.getLogsBetweenDates(startDateStr, endDateStr);
@@ -110,7 +121,7 @@ export const calendarService = {
     const monthDaysMap = {};
 
     for (let dayNum = 1; dayNum <= lastDate; dayNum++) {
-      const dateStr = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+      const dateStr = `${targetYear}-${String(targetMonth + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
       const statusObj = getDateStatus(dateStr, habits, logs, today);
       const isToday = dateStr === today;
 
@@ -128,13 +139,16 @@ export const calendarService = {
   /**
    * Mengambil detail log dan batasan retroaktif untuk satu tanggal tertentu.
    * @param {number} dateNum
-   * @param {number} [year=2024]
-   * @param {number} [monthIndex=9]
+   * @param {number} [year]
+   * @param {number} [monthIndex]
    * @returns {Promise<Object>}
    */
-  async getDateDetails(dateNum, year = 2024, monthIndex = 9) {
+  async getDateDetails(dateNum, year, monthIndex) {
     const today = getTodayString();
-    const dateStr = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(dateNum).padStart(2, '0')}`;
+    const [currY, currM] = today.split('-').map(Number);
+    const targetYear = year ?? currY;
+    const targetMonth = monthIndex ?? (currM - 1);
+    const dateStr = `${targetYear}-${String(targetMonth + 1).padStart(2, '0')}-${String(dateNum).padStart(2, '0')}`;
 
     const habits = await habitService.getAllHabits({ includeArchived: true });
     const scheduledHabits = habits.filter((h) => isDateScheduled(h, dateStr));
@@ -149,7 +163,7 @@ export const calendarService = {
     ];
 
     const dayName = dayNames[dateObj.getDay()];
-    const formattedDate = `${dayName}, ${dateNum} ${monthNames[monthIndex]} ${year}`;
+    const formattedDate = `${dayName}, ${dateNum} ${monthNames[targetMonth]} ${targetYear}`;
 
     const retroactiveCheck = isDateWithinRetroactiveLimit(dateStr, today, 7);
     const isReadOnly = !retroactiveCheck.isValid;
@@ -203,11 +217,14 @@ export const calendarService = {
    * @param {number} [monthIndex=9]
    * @returns {Promise<Object>}
    */
-  async toggleDateHabit(dateNum, habitId, year = 2024, monthIndex = 9) {
+  async toggleDateHabit(dateNum, habitId, year, monthIndex) {
     const today = getTodayString();
-    const dateStr = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(dateNum).padStart(2, '0')}`;
+    const [currY, currM] = today.split('-').map(Number);
+    const targetYear = year ?? currY;
+    const targetMonth = monthIndex ?? (currM - 1);
+    const dateStr = `${targetYear}-${String(targetMonth + 1).padStart(2, '0')}-${String(dateNum).padStart(2, '0')}`;
 
     await logService.toggleCheckboxHabit(habitId, dateStr, today);
-    return this.getDateDetails(dateNum, year, monthIndex);
+    return this.getDateDetails(dateNum, targetYear, targetMonth);
   },
 };

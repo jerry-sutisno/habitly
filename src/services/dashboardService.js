@@ -44,16 +44,28 @@ export const dashboardService = {
     const pendingToday = progress.totalScheduled - progress.completedCount - progress.skippedCount;
 
     return {
-      streakDays: Math.max(streakDays, 1),
-      personalBest: Math.max(streakDays, 21),
+      streakDays,
+      personalBest: streakDays,
       totalActiveHabits: allHabits.length,
       scheduledToday: progress.totalScheduled,
       completedToday: progress.completedCount,
       pendingToday: Math.max(0, pendingToday),
-      progressPercent: progress.progressPercent,
-      progressHeadline: 'Momentum Tenang',
-      progressDescription: 'Anda membuat kemajuan yang stabil dan tenang hari ini.',
-      routinesLeftText: `${Math.max(0, pendingToday)} rutinitas tenang tersisa`,
+      progressPercent: progress.progressPercent || 0,
+      progressHeadline: allHabits.length === 0
+        ? 'Mulai Langkah Pertama'
+        : progress.progressPercent === 100
+        ? 'Semua Selesai!'
+        : 'Momentum Tenang',
+      progressDescription: allHabits.length === 0
+        ? 'Tanam kebiasaan baru untuk memulai perjalanan mindful Anda hari ini.'
+        : progress.progressPercent === 100
+        ? 'Luar biasa! Seluruh kebiasaan hari ini telah tercapai dengan penuh kesadaran.'
+        : 'Anda membuat kemajuan yang stabil dan tenang hari ini.',
+      routinesLeftText: allHabits.length === 0
+        ? ''
+        : pendingToday > 0
+        ? `${pendingToday} rutinitas tenang tersisa`
+        : 'Semua rutinitas hari ini selesai',
     };
   },
 
@@ -146,18 +158,21 @@ export const dashboardService = {
       days.push({
         day: weekLabels[jsDay],
         completed: statusObj.completedCount,
-        total: statusObj.effectiveTotal || 5,
+        total: statusObj.effectiveTotal,
         height: `${rate}%`,
         highlight: isToday,
       });
     }
 
-    const avgRate = totalScheduled > 0 ? Math.round((totalCompleted / totalScheduled) * 100) : 80;
+    const avgRate = totalScheduled > 0 ? Math.round((totalCompleted / totalScheduled) * 100) : 0;
 
     return {
-      summary: `${totalCompleted} dari ${totalScheduled || 35} rutinitas terjaga`,
+      summary: totalScheduled > 0
+        ? `${totalCompleted} dari ${totalScheduled} rutinitas terjaga`
+        : 'Belum ada rutinitas terjaga',
       average: `${avgRate}% Rata-rata`,
       days,
+      isEmpty: habits.length === 0,
     };
   },
 

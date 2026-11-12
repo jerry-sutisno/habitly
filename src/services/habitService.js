@@ -1,8 +1,9 @@
 import { db } from '../db/db';
-import { seedInitialData } from '../db/seed';
+import { seedDefaultCategories } from '../db/seed';
 import { logService } from './logService';
 import { getTodayString } from '../utils/date';
 import { calculateHabitStreak } from '../utils/streak';
+import { id as i18n } from '../i18n/id';
 
 function generateId() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -14,13 +15,13 @@ function generateId() {
 export const habitService = {
   /**
    * Mengambil semua kebiasaan dari IndexedDB beserta relasi nama kategori dan status log hari ini.
-   * Menginisialisasi data awal jika database masih kosong.
+   * Menginisialisasi kategori default jika masih kosong.
    * @param {{ includeArchived?: boolean }} [options]
    * @param {Dexie} [targetDb=db]
    * @returns {Promise<Array<Object>>}
    */
   async getAllHabits({ includeArchived = false } = {}, targetDb = db) {
-    await seedInitialData(targetDb);
+    await seedDefaultCategories(targetDb);
 
     const habits = includeArchived
       ? await targetDb.habits.toArray()
@@ -72,7 +73,7 @@ export const habitService = {
    * @returns {Promise<Array<string>>}
    */
   async getCategories(targetDb = db) {
-    await seedInitialData(targetDb);
+    await seedDefaultCategories(targetDb);
     const categories = await targetDb.categories.toArray();
     return ['All', ...categories.map((c) => c.name)];
   },
@@ -87,12 +88,20 @@ export const habitService = {
     const totalHabits = habits.length;
     const totalStreak = habits.reduce((acc, h) => acc + (h.streak || 0), 0);
     const avgStreak = totalHabits > 0 ? Math.round(totalStreak / totalHabits) : 0;
+    const completedToday = habits.filter((h) => h.status === 'completed').length;
+    const rate = totalHabits > 0 ? Math.round((completedToday / totalHabits) * 100) : 0;
 
     return {
-      activeDays: 22,
-      cadenceRate: '88% Rhythm',
+      percentage: rate,
+      completed: completedToday,
+      total: totalHabits,
+      activeDays: 0,
+      cadenceRate: `${rate}% Ritme`,
       longestStreak: totalHabits > 0 ? Math.max(...habits.map((h) => h.streak || 0)) : 0,
-      focusSummary: `${totalHabits} kebiasaan mindful aktif dipertahankan dengan konsistensi rata-rata ${avgStreak} hari`,
+      headline: totalHabits > 0 ? i18n.habits.focusHeadline(rate) : 'Mulai Kebiasaan Pertama Anda',
+      summary: totalHabits > 0
+        ? i18n.habits.focusSummary(completedToday, totalHabits)
+        : 'Tanam kebiasaan baru untuk membangun ritme harian Anda.',
     };
   },
 

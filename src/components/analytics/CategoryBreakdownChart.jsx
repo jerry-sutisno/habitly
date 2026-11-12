@@ -2,6 +2,22 @@ import React from 'react';
 import { Layers } from 'lucide-react';
 
 export default function CategoryBreakdownChart({ categoryData = [] }) {
+  if (categoryData.length === 0) {
+    return (
+      <div className="bg-white dark:bg-[#1B2129] rounded-2xl border border-slate-200/80 dark:border-[#2A323D] p-5 sm:p-6 shadow-sm space-y-3 text-center">
+        <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-[#14181D] text-slate-400 mx-auto flex items-center justify-center">
+          <Layers className="w-5 h-5" />
+        </div>
+        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+          Belum Ada Kategori Aktif
+        </h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
+          Kategori kebiasaan yang Anda jalani akan dianalisis di sini setelah Anda mulai membuat kebiasaan.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white dark:bg-[#1B2129] rounded-2xl border border-slate-200/80 dark:border-[#2A323D] p-5 sm:p-6 shadow-sm space-y-4">
       <div className="flex items-center justify-between">

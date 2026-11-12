@@ -3,8 +3,8 @@ import { ArrowUpRight, ArrowDownRight, Sparkles, CheckCircle2 } from 'lucide-rea
 import { id as i18n } from '../../i18n/id';
 
 export default function CompletionRateCard({
-  completionRate = 84,
-  trendText = '+6% vs minggu lalu',
+  completionRate = 0,
+  trendText = '-',
   isTrendPositive = true,
   momentumMessage = i18n.analytics.momentumMessage,
 }) {
@@ -23,20 +23,22 @@ export default function CompletionRateCard({
             <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-emerald-700 dark:text-[#54C28E]">
               {completionRate}%
             </span>
-            <span
-              className={`inline-flex items-center gap-0.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                isTrendPositive
-                  ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-[#54C28E]'
-                  : 'bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-400'
-              }`}
-            >
-              {isTrendPositive ? (
-                <ArrowUpRight className="h-3.5 w-3.5 stroke-[2.5]" />
-              ) : (
-                <ArrowDownRight className="h-3.5 w-3.5 stroke-[2.5]" />
-              )}
-              {trendText}
-            </span>
+            {trendText && trendText !== '-' && (
+              <span
+                className={`inline-flex items-center gap-0.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                  isTrendPositive
+                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-[#54C28E]'
+                    : 'bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-400'
+                }`}
+              >
+                {isTrendPositive ? (
+                  <ArrowUpRight className="h-3.5 w-3.5 stroke-[2.5]" />
+                ) : (
+                  <ArrowDownRight className="h-3.5 w-3.5 stroke-[2.5]" />
+                )}
+                {trendText}
+              </span>
+            )}
           </div>
         </div>
 

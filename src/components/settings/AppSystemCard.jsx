@@ -4,8 +4,8 @@ import { storageService } from '../../services/storageService';
 import { id as i18n } from '../../i18n/id';
 
 export default function AppSystemCard({
-  storageUsed = '2.4 MB',
-  storedHabitsCount = 8,
+  storageUsed = '0.1 MB',
+  storedHabitsCount = 0,
   storageStatus = i18n.settings.storageHealthy,
   isInstallable = false,
   isInstalled = false,

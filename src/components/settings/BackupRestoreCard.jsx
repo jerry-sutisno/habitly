@@ -3,7 +3,7 @@ import { Download, Upload, Cloud, ShieldCheck } from 'lucide-react';
 import { id as i18n } from '../../i18n/id';
 
 export default function BackupRestoreCard({
-  lastSynced = 'Hari ini, 08:45 WIB',
+  lastSynced = 'Belum pernah',
   syncMode = i18n.settings.syncModeLabel,
   onExportClick,
   onRestoreClick,

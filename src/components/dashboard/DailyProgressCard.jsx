@@ -68,7 +68,7 @@ export default function DailyProgressCard({ stats }) {
         {/* Text descriptions */}
         <div className="flex flex-col gap-1 min-w-0 text-center sm:text-left">
           <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">
-            {completedToday} dari {scheduledToday} selesai &bull; {progressHeadline}
+            {scheduledToday > 0 ? `${completedToday} dari ${scheduledToday} selesai • ${progressHeadline}` : progressHeadline}
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
             {progressDescription}

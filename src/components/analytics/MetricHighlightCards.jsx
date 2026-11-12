@@ -25,13 +25,13 @@ export default function MetricHighlightCards({
             {i18n.analytics.bestHabitTitle}
           </span>
           <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate mt-0.5">
-            {bestHabit?.name || 'Meditasi Pagi'}
+            {bestHabit?.name || 'Belum Ada'}
           </h3>
         </div>
 
         <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-[#54C28E]">
           <Flame className="w-4 h-4" />
-          <span>{i18n.analytics.streakCount(bestHabit?.streak || 18)}</span>
+          <span>{bestHabit ? i18n.analytics.streakCount(bestHabit.streak) : '0 hari streak'}</span>
         </div>
       </div>
 
@@ -51,13 +51,13 @@ export default function MetricHighlightCards({
             {i18n.analytics.mostConsistentDayTitle}
           </span>
           <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate mt-0.5">
-            {mostConsistentDay?.day || 'Selasa'}
+            {mostConsistentDay?.day || '-'}
           </h3>
         </div>
 
         <div className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-700 dark:text-teal-300">
           <CheckCircle2 className="w-4 h-4" />
-          <span>{mostConsistentDay?.description || 'Rata-rata 94%'}</span>
+          <span>{mostConsistentDay?.description || 'Belum ada data'}</span>
         </div>
       </div>
 
@@ -77,12 +77,12 @@ export default function MetricHighlightCards({
             {i18n.analytics.perfectDaysTitle}
           </span>
           <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate mt-0.5">
-            {i18n.analytics.perfectDaysCount(stats?.perfectDays || 3)}
+            {i18n.analytics.perfectDaysCount(stats?.perfectDays || 0)}
           </h3>
         </div>
 
         <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-400">
-          <span>{i18n.analytics.perfectDaysDesc}</span>
+          <span>{stats?.perfectDays ? i18n.analytics.perfectDaysDesc : '0 hari tercatat'}</span>
         </div>
       </div>
 
@@ -102,12 +102,12 @@ export default function MetricHighlightCards({
             {i18n.analytics.totalCheckinsTitle}
           </span>
           <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate mt-0.5">
-            {i18n.analytics.totalCheckinsCount(stats?.totalCheckins || 28)}
+            {i18n.analytics.totalCheckinsCount(stats?.totalCheckins || 0)}
           </h3>
         </div>
 
         <div className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-700 dark:text-indigo-400">
-          <span>{i18n.analytics.totalCheckinsDesc}</span>
+          <span>{stats?.totalCheckins ? i18n.analytics.totalCheckinsDesc : 'Belum ada catatan'}</span>
         </div>
       </div>
     </div>

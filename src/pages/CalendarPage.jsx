@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import { calendarService } from '../services/calendarService';
+import { getTodayString } from '../utils/date';
 import CalendarHeader from '../components/calendar/CalendarHeader';
 import MonthlyRhythmBanner from '../components/calendar/MonthlyRhythmBanner';
 import CalendarGrid from '../components/calendar/CalendarGrid';
@@ -11,19 +12,23 @@ import QuietSanctuaryCallout from '../components/calendar/QuietSanctuaryCallout'
 export default function CalendarPage() {
   const { theme, toggleTheme } = useTheme();
 
+  const todayStr = getTodayString();
+  const [todayYear, todayMonth, todayDateNum] = todayStr.split('-').map(Number);
+
   const [overview, setOverview] = useState({
-    monthName: 'Oktober 2024',
-    year: 2024,
-    month: 9,
-    todayDate: 24,
-    firstDayOffset: 2,
-    totalDays: 31,
-    consistencyRate: 82,
-    activeDaysLogged: 22,
-    trendText: '+4%',
+    monthName: '',
+    year: todayYear,
+    month: todayMonth - 1,
+    todayDate: todayDateNum,
+    firstDayOffset: 0,
+    totalDays: 30,
+    consistencyRate: 0,
+    activeDaysLogged: 0,
+    trendText: '-',
+    totalHabits: 0,
   });
   const [daysData, setDaysData] = useState({});
-  const [selectedDate, setSelectedDate] = useState(24);
+  const [selectedDate, setSelectedDate] = useState(todayDateNum);
   const [dateDetail, setDateDetail] = useState(null);
 
   const loadCalendarData = async () => {
@@ -93,6 +98,7 @@ export default function CalendarPage() {
         consistencyRate={overview.consistencyRate}
         activeDaysLogged={overview.activeDaysLogged}
         trendText={overview.trendText}
+        totalHabits={overview.totalHabits}
       />
 
       {/* Main Responsive Layout */}

@@ -42,12 +42,12 @@ export async function seedDefaultCategories(targetDb = db) {
 }
 
 /**
- * Melakukan inisialisasi awal database (seeding habits & log contoh)
- * jika database masih kosong saat pertama kali aplikasi dijalankan.
+ * Melakukan pengisian data contoh (demo habits & logs)
+ * HANYA digunakan untuk mode development lokal atau testing ketika diminta pengguna.
  * @param {Dexie} [targetDb=db]
  * @returns {Promise<boolean>}
  */
-export async function seedInitialData(targetDb = db) {
+export async function seedDemoData(targetDb = db) {
   const categories = await seedDefaultCategories(targetDb);
   const habitsCount = await targetDb.habits.count();
 
@@ -198,3 +198,6 @@ export async function seedInitialData(targetDb = db) {
   await targetDb.habit_logs.bulkAdd(initialLogs);
   return true;
 }
+
+export const seedInitialData = seedDemoData;
+
