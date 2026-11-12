@@ -41,51 +41,137 @@ function writeChunk(type, data) {
   return Buffer.concat([lengthBuf, typeBuf, data, crcBuf]);
 }
 
-function generatePng(width, height, color = { r: 16, g: 185, b: 129, a: 255 }) {
-  // Signature
+/**
+ * Render icon directly matching Habitly's branding:
+ * Background: #10B981 (Emerald)
+ * Foreground: White "H" with rounded pill bars
+ * Accent: Mint green (#34D399) spark circle
+ *
+ * @param {number} size
+ * @param {Object} options
+ * @param {boolean} options.isMaskable - full bleed background without rounded corners
+ * @param {number} options.scale - scale factor for inner symbol
+ */
+function renderHabitlyIcon(size, { isMaskable = false, scale = 1.0 } = {}) {
   const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 
-  // IHDR
   const ihdrData = Buffer.alloc(13);
-  ihdrData.writeUInt32BE(width, 0);
-  ihdrData.writeUInt32BE(height, 4);
-  ihdrData.writeUInt8(8, 8); // 8 bits
+  ihdrData.writeUInt32BE(size, 0);
+  ihdrData.writeUInt32BE(size, 4);
+  ihdrData.writeUInt8(8, 8); // 8-bit
   ihdrData.writeUInt8(6, 9); // RGBA
-  ihdrData.writeUInt8(0, 10); // compression
-  ihdrData.writeUInt8(0, 11); // filter
-  ihdrData.writeUInt8(0, 12); // interlace
+  ihdrData.writeUInt8(0, 10);
+  ihdrData.writeUInt8(0, 11);
+  ihdrData.writeUInt8(0, 12);
   const ihdrChunk = writeChunk('IHDR', ihdrData);
 
-  // Raw image data with row filter 0
-  const rowSize = 1 + width * 4;
-  const rawData = Buffer.alloc(rowSize * height);
+  const rowSize = 1 + size * 4;
+  const rawData = Buffer.alloc(rowSize * size);
 
-  for (let y = 0; y < height; y++) {
+  // Background color (#10B981)
+  const bgR = 16, bgG = 185, bgB = 129;
+  // Accent mint (#34D399)
+  const accR = 52, accG = 211, accB = 153;
+
+  // Geometry in normalized coordinates [0, 1]
+  const cornerRadius = isMaskable ? 0 : 0.22; // 22% rounded corner for regular icon
+
+  // Symbol base points (normalized)
+  const cx = 0.5, cy = 0.5;
+  // Bar positions relative to center
+  const barWidth = 0.09 * scale;
+  const barRadius = barWidth / 2;
+  const xLeft = cx - 0.18 * scale;
+  const xRight = cx + 0.18 * scale;
+  const yTop = cy - 0.22 * scale;
+  const yBottom = cy + 0.22 * scale;
+  const yCross = cy;
+
+  // Accent circle at top-right
+  const dotX = xRight;
+  const dotY = yTop;
+  const dotRadius = 0.06 * scale;
+
+  // Helper: Distance to segment
+  function distToSegment(px, py, x1, y1, x2, y2) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const lenSq = dx * dx + dy * dy;
+    if (lenSq === 0) return Math.hypot(px - x1, py - y1);
+    let t = ((px - x1) * dx + (py - y1) * dy) / lenSq;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+  }
+
+  // Helper: check if inside rounded rectangle
+  function isInRoundedRect(px, py, radius) {
+    if (radius <= 0) return true;
+    const r = radius;
+    // Four corner centers
+    const ctl = { x: r, y: r };
+    const ctr = { x: 1 - r, y: r };
+    const cbl = { x: r, y: 1 - r };
+    const cbr = { x: 1 - r, y: 1 - r };
+
+    if (px < r && py < r) return Math.hypot(px - ctl.x, py - ctl.y) <= r;
+    if (px > 1 - r && py < r) return Math.hypot(px - ctr.x, py - ctr.y) <= r;
+    if (px < r && py > 1 - r) return Math.hypot(px - cbl.x, py - cbl.y) <= r;
+    if (px > 1 - r && py > 1 - r) return Math.hypot(px - cbr.x, py - cbr.y) <= r;
+    return true;
+  }
+
+  for (let y = 0; y < size; y++) {
     const rowOffset = y * rowSize;
-    rawData[rowOffset] = 0; // Filter None
+    rawData[rowOffset] = 0; // Filter 0
 
-    for (let x = 0; x < width; x++) {
+    const ny = (y + 0.5) / size;
+
+    for (let x = 0; x < size; x++) {
+      const nx = (x + 0.5) / size;
       const pixelOffset = rowOffset + 1 + x * 4;
-      // Draw a subtle border / shape or solid emerald
-      const isInner =
-        x >= width * 0.15 &&
-        x <= width * 0.85 &&
-        y >= height * 0.15 &&
-        y <= height * 0.85;
 
-      if (isInner && (x <= width * 0.35 || x >= width * 0.65 || (y >= height * 0.42 && y <= height * 0.58))) {
-        // "H" letter in white
-        rawData[pixelOffset] = 255;
-        rawData[pixelOffset + 1] = 255;
-        rawData[pixelOffset + 2] = 255;
-        rawData[pixelOffset + 3] = 255;
-      } else {
-        // Emerald (#10B981) background
-        rawData[pixelOffset] = color.r;
-        rawData[pixelOffset + 1] = color.g;
-        rawData[pixelOffset + 2] = color.b;
-        rawData[pixelOffset + 3] = color.a;
+      // 1. Check background shape
+      if (!isInRoundedRect(nx, ny, cornerRadius)) {
+        // Transparent corner
+        rawData[pixelOffset] = 0;
+        rawData[pixelOffset + 1] = 0;
+        rawData[pixelOffset + 2] = 0;
+        rawData[pixelOffset + 3] = 0;
+        continue;
       }
+
+      // Default: Emerald background
+      let r = bgR, g = bgG, b = bgB, a = 255;
+
+      // 2. Check if inside "H" paths
+      // Left bar
+      const dLeft = distToSegment(nx, ny, xLeft, yTop, xLeft, yBottom);
+      // Right bar
+      const dRight = distToSegment(nx, ny, xRight, yTop, xRight, yBottom);
+      // Cross bar
+      const dCross = distToSegment(nx, ny, xLeft, yCross, xRight, yCross);
+
+      const dH = Math.min(dLeft, dRight, dCross);
+
+      // Dot distance
+      const dDot = Math.hypot(nx - dotX, ny - dotY);
+
+      if (dDot <= dotRadius) {
+        // Mint accent circle
+        r = accR;
+        g = accG;
+        b = accB;
+      } else if (dH <= barRadius) {
+        // White "H"
+        r = 255;
+        g = 255;
+        b = 255;
+      }
+
+      rawData[pixelOffset] = r;
+      rawData[pixelOffset + 1] = g;
+      rawData[pixelOffset + 2] = b;
+      rawData[pixelOffset + 3] = a;
     }
   }
 
@@ -101,9 +187,16 @@ if (!fs.existsSync(outDir)) {
   fs.mkdirSync(outDir, { recursive: true });
 }
 
-fs.writeFileSync(path.join(outDir, 'icon-192.png'), generatePng(192, 192));
-fs.writeFileSync(path.join(outDir, 'icon-512.png'), generatePng(512, 512));
-fs.writeFileSync(path.join(outDir, 'maskable-512.png'), generatePng(512, 512));
-fs.writeFileSync(path.join(outDir, 'apple-touch-icon.png'), generatePng(180, 180));
+// 1. Standard 192x192
+fs.writeFileSync(path.join(outDir, 'icon-192.png'), renderHabitlyIcon(192, { isMaskable: false, scale: 1.0 }));
 
-console.log('Generated placeholder icons in public/icons/');
+// 2. Standard 512x512
+fs.writeFileSync(path.join(outDir, 'icon-512.png'), renderHabitlyIcon(512, { isMaskable: false, scale: 1.0 }));
+
+// 3. Maskable 512x512 (Safe-zone 80%, full-bleed solid background)
+fs.writeFileSync(path.join(outDir, 'maskable-512.png'), renderHabitlyIcon(512, { isMaskable: true, scale: 0.78 }));
+
+// 4. Apple Touch Icon 180x180 (iOS adds its own mask, full bleed)
+fs.writeFileSync(path.join(outDir, 'apple-touch-icon.png'), renderHabitlyIcon(180, { isMaskable: true, scale: 0.85 }));
+
+console.log('Successfully generated crisp, final Habitly PWA icons (192, 512, maskable, apple-touch)!');

@@ -1,28 +1,126 @@
-import React from 'react';
-import { Calendar } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useTheme } from '../hooks/useTheme';
+import { calendarService } from '../services/calendarService';
+import CalendarHeader from '../components/calendar/CalendarHeader';
+import MonthlyRhythmBanner from '../components/calendar/MonthlyRhythmBanner';
+import CalendarGrid from '../components/calendar/CalendarGrid';
+import CalendarLegend from '../components/calendar/CalendarLegend';
+import SelectedDateDetail from '../components/calendar/SelectedDateDetail';
+import QuietSanctuaryCallout from '../components/calendar/QuietSanctuaryCallout';
 
 export default function CalendarPage() {
-  return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
-          Calendar
-        </h1>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-          Riwayat visual status harian dan fitur pencatatan retroaktif hingga 7 hari lalu.
-        </p>
-      </header>
+  const { theme, toggleTheme } = useTheme();
 
-      <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 p-8 sm:p-12 text-center bg-white/50 dark:bg-slate-900/50">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mb-4">
-          <Calendar className="h-7 w-7" />
+  const [overview, setOverview] = useState({
+    monthName: 'Oktober 2024',
+    year: 2024,
+    month: 9,
+    todayDate: 24,
+    firstDayOffset: 2,
+    totalDays: 31,
+    consistencyRate: 82,
+    activeDaysLogged: 22,
+    trendText: '+4%',
+  });
+  const [daysData, setDaysData] = useState({});
+  const [selectedDate, setSelectedDate] = useState(24);
+  const [dateDetail, setDateDetail] = useState(null);
+
+  const loadCalendarData = async () => {
+    try {
+      const ov = await calendarService.getMonthOverview(overview.year, overview.month);
+      setOverview(ov);
+
+      const days = await calendarService.getMonthDays(overview.year, overview.month);
+      setDaysData(days);
+
+      const detail = await calendarService.getDateDetails(selectedDate, overview.year, overview.month);
+      setDateDetail(detail);
+    } catch (err) {
+      console.error('Error loading calendar data:', err);
+    }
+  };
+
+  useEffect(() => {
+    loadCalendarData();
+  }, [overview.year, overview.month, selectedDate]);
+
+  const handleSelectDate = async (dateNum) => {
+    setSelectedDate(dateNum);
+    const detail = await calendarService.getDateDetails(dateNum, overview.year, overview.month);
+    setDateDetail(detail);
+  };
+
+  const handleToggleHabit = async (dateNum, habitId) => {
+    await calendarService.toggleDateHabit(dateNum, habitId, overview.year, overview.month);
+    await loadCalendarData();
+  };
+
+  const handleJumpToday = () => {
+    setSelectedDate(overview.todayDate);
+  };
+
+  const handlePrevMonth = () => {
+    setOverview((prev) => {
+      const newMonth = prev.month === 0 ? 11 : prev.month - 1;
+      const newYear = prev.month === 0 ? prev.year - 1 : prev.year;
+      return { ...prev, month: newMonth, year: newYear };
+    });
+  };
+
+  const handleNextMonth = () => {
+    setOverview((prev) => {
+      const newMonth = prev.month === 11 ? 0 : prev.month + 1;
+      const newYear = prev.month === 11 ? prev.year + 1 : prev.year;
+      return { ...prev, month: newMonth, year: newYear };
+    });
+  };
+
+  return (
+    <div className="space-y-6 pb-12">
+      {/* Top Header: Navigator, Today Button, Dark/Light Toggle */}
+      <CalendarHeader
+        monthName={overview.monthName}
+        onPrevMonth={handlePrevMonth}
+        onNextMonth={handleNextMonth}
+        onJumpToday={handleJumpToday}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
+
+      {/* Monthly Rhythm Consistency Banner */}
+      <MonthlyRhythmBanner
+        consistencyRate={overview.consistencyRate}
+        activeDaysLogged={overview.activeDaysLogged}
+        trendText={overview.trendText}
+      />
+
+      {/* Main Responsive Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column (Desktop 7 cols): Monthly Calendar Grid & Status Legend */}
+        <div className="lg:col-span-7 space-y-6">
+          <CalendarGrid
+            totalDays={overview.totalDays}
+            firstDayOffset={overview.firstDayOffset}
+            daysData={daysData}
+            selectedDate={selectedDate}
+            todayDate={overview.todayDate}
+            onSelectDate={handleSelectDate}
+          />
+
+          {/* Explicit Status Legend with Icons & Labels */}
+          <CalendarLegend />
         </div>
-        <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
-          Halaman Calendar Kosong
-        </h2>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 max-w-sm">
-          Kerangka proyek telah aktif. Tampilan grid kalender bulanan dan modal detail tanggal akan diintegrasikan pada fase berikutnya.
-        </p>
+
+        {/* Right Column (Desktop 5 cols): Selected Date Detail & Mindful Sanctuary */}
+        <div className="lg:col-span-5 space-y-6">
+          <SelectedDateDetail
+            dateDetail={dateDetail}
+            onToggleHabit={handleToggleHabit}
+          />
+
+          <QuietSanctuaryCallout />
+        </div>
       </div>
     </div>
   );
